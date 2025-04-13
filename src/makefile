@@ -4,7 +4,6 @@ CC = gcc
 # Flags de compilación
 CFLAGS = -Wall -g -fPIC -pthread
 
-
 # Detectar sistema operativo
 UNAME_S := $(shell uname -s)
 
@@ -12,9 +11,17 @@ ifeq ($(UNAME_S),Linux)
 	CFLAGS += -ltr
 endif
 
+ifeq ($(UNAME_S),Darwin)
+	# En macOS, tirpc no se necesita
+endif
+
+# Archivos fuente RPC generados
+RPC_X = tuplas.x
+RPC_GEN_SRCS = tuplas_clnt.c tuplas_svc.c tuplas_xdr.c
+RPC_GEN_HDR = tuplas.h
 
 # Archivos fuente
-SRCS_SERVER = servidor-rpc.c claves.c lines.c
+SRCS_SERVER = servidor-rpc.c claves.c lines.c $(RPC_GEN_SRCS)
 SRCS_PROXY = proxy-rpc.c lines.c
 SRCS_CLIENT0 = clientes/app-cliente-0.c
 SRCS_CLIENT1 = clientes/app-cliente-1.c
@@ -41,8 +48,12 @@ TARGET_CLIENT3 = app-cliente-3
 TARGET_CLIENT4 = app-cliente-4
 TARGET_CLIENT5 = app-cliente-5
 
-# Regla por defecto: compilar todo
-all: $(TARGET_SERVER) $(LIB_NAME) $(TARGET_CLIENT0) $(TARGET_CLIENT1) $(TARGET_CLIENT6) $(TARGET_CLIENT2) $(TARGET_CLIENT3) $(TARGET_CLIENT4) $(TARGET_CLIENT5)
+# Regla por defecto
+all: $(RPC_GEN_HDR) $(RPC_GEN_SRCS) $(TARGET_SERVER) $(LIB_NAME) $(TARGET_CLIENT0) $(TARGET_CLIENT1) $(TARGET_CLIENT6) $(TARGET_CLIENT2) $(TARGET_CLIENT3) $(TARGET_CLIENT4) $(TARGET_CLIENT5)
+
+# Generar código RPC
+$(RPC_GEN_HDR) $(RPC_GEN_SRCS): $(RPC_X)
+	rpcgen -N $(RPC_X)
 
 # Compilar el servidor
 $(TARGET_SERVER): $(OBJS_SERVER)
@@ -52,7 +63,7 @@ $(TARGET_SERVER): $(OBJS_SERVER)
 $(LIB_NAME): $(OBJS_PROXY)
 	$(CC) -shared -o $(LIB_NAME) $(OBJS_PROXY)
 
-# Compilar los cliente-s y vincular la librería
+# Compilar clientes y vincular con la librería
 $(TARGET_CLIENT0): $(SRCS_CLIENT0)
 	$(CC) $(CFLAGS) -o $(TARGET_CLIENT0) $(SRCS_CLIENT0) -L. -lclaves
 
@@ -74,10 +85,13 @@ $(TARGET_CLIENT4): $(SRCS_CLIENT4)
 $(TARGET_CLIENT5): $(SRCS_CLIENT5)
 	$(CC) $(CFLAGS) -o $(TARGET_CLIENT5) $(SRCS_CLIENT5) -L. -lclaves
 
-# Regla para compilar archivos .c a .o
+# Regla para compilar .c a .o
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Limpiar archivos generados
+# Limpiar
 clean:
-	rm -f $(OBJS_SERVER) $(OBJS_PROXY) $(TARGET_SERVER) $(TARGET_CLIENT0) $(TARGET_CLIENT1) $(TARGET_CLIENT6) $(TARGET_CLIENT2) $(TARGET_CLIENT3) $(TARGET_CLIENT4) $(TARGET_CLIENT5) $(LIB_NAME)
+	rm -f $(OBJS_SERVER) $(OBJS_PROXY) $(TARGET_SERVER) \
+	$(TARGET_CLIENT0) $(TARGET_CLIENT1) $(TARGET_CLIENT6) \
+	$(TARGET_CLIENT2) $(TARGET_CLIENT3) $(TARGET_CLIENT4) \
+	$(TARGET_CLIENT5) $(LIB_NAME) $(RPC_GEN_SRCS) $(RPC_GEN_HDR)

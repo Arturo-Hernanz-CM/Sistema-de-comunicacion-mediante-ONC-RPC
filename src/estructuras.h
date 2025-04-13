@@ -20,7 +20,7 @@ typedef struct{
     int size;
 }Lista;
 
-typedef struct{
+struct Peticion{
     int key;
     char value1[256];  
     int N_value2;
@@ -37,6 +37,6 @@ typedef struct{
     */
 
     char cola_cliente[256];
-}Peticion;
+};
 
 #endif

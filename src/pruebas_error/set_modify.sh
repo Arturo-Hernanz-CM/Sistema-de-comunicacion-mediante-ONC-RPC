@@ -11,8 +11,8 @@ cleanup(){
 
 trap cleanup SIGINT
 
-env IP_TUPLAS=localhost PORT_TUPLAS=5850 ./app-cliente-6
-env IP_TUPLAS=localhost PORT_TUPLAS=5850 ./app-cliente-3
+env IP_TUPLAS=localhost ./app-cliente-6
+env IP_TUPLAS=localhost ./app-cliente-3
 
 
 wait 
