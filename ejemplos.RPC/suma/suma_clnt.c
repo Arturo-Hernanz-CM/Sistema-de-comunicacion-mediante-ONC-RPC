@@ -3,16 +3,14 @@
  * It was generated using rpcgen.
  */
 
+#include <memory.h>
 #include "suma.h"
 
 /* Default timeout can be changed using clnt_control() */
 static struct timeval TIMEOUT = { 25, 0 };
 
 int *
-suma_1(a, b, clnt)
-	int a;
-	int b;
-	CLIENT *clnt;
+suma_1(int a, int b,  CLIENT *clnt)
 {
 	suma_1_argument arg;
 	static int clnt_res;
@@ -26,10 +24,7 @@ suma_1(a, b, clnt)
 }
 
 int *
-resta_1(a, b, clnt)
-	int a;
-	int b;
-	CLIENT *clnt;
+resta_1(int a, int b,  CLIENT *clnt)
 {
 	resta_1_argument arg;
 	static int clnt_res;

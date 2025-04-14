@@ -6,38 +6,28 @@
 
 #include "suma.h"
 
-bool_t
-suma_1_svc(int a, int b, int *result,  struct svc_req *rqstp)
+int *
+suma_1_svc(int a, int b,  struct svc_req *rqstp)
 {
-	bool_t retval = TRUE;
+
+	static int  result;
 
 	/*
 	 * insert server code here
 	 */
 
-	return retval;
+	return(&result);
 }
 
-bool_t
-resta_1_svc(int a, int b, int *result,  struct svc_req *rqstp)
+int *
+resta_1_svc(int a, int b,  struct svc_req *rqstp)
 {
-	bool_t retval = TRUE;
+
+	static int  result;
 
 	/*
 	 * insert server code here
 	 */
 
-	return retval;
-}
-
-int
-sumar_1_freeresult (SVCXPRT *transp, xdrproc_t xdr_result, caddr_t result)
-{
-	xdr_free (xdr_result, result);
-
-	/*
-	 * Insert additional freeing code here, if needed
-	 */
-
-	return 1;
+	return(&result);
 }

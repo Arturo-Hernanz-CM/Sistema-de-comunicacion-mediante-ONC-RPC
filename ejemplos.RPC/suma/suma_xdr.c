@@ -6,9 +6,7 @@
 #include "suma.h"
 
 bool_t
-xdr_suma_1_argument(xdrs, objp)
-	XDR *xdrs;
-	suma_1_argument *objp;
+xdr_suma_1_argument(XDR *xdrs, suma_1_argument *objp)
 {
 	if (!xdr_int(xdrs, &objp->a))
 		return (FALSE);
@@ -18,9 +16,7 @@ xdr_suma_1_argument(xdrs, objp)
 }
 
 bool_t
-xdr_resta_1_argument(xdrs, objp)
-	XDR *xdrs;
-	resta_1_argument *objp;
+xdr_resta_1_argument(XDR *xdrs, resta_1_argument *objp)
 {
 	if (!xdr_int(xdrs, &objp->a))
 		return (FALSE);

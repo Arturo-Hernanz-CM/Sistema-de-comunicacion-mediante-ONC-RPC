@@ -2,7 +2,7 @@
 CC = gcc
 
 # Flags de compilación
-CFLAGS = -Wall -g -fPIC -pthread
+CFLAGS = -Wall -g -fPIC -ldl -pthread
 
 # Librerías para el linker
 LDLIBS = -lpthread

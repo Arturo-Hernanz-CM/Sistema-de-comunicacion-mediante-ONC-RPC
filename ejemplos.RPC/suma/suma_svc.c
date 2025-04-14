@@ -8,9 +8,15 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <rpc/pmap_clnt.h>
+#include <string.h>
 #include <netdb.h>
 #include <signal.h>
 #include <sys/ttycom.h>
+#ifdef __cplusplus
+#include <sysent.h>
+#endif /* __cplusplus */
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -30,8 +36,7 @@ static int _rpcfdtype;		/* Whether Stream or Datagram ? */
 static int _rpcsvcdirty;	/* Still serving ? */
 
 static
-void _msgout(msg)
-	char *msg;
+void _msgout(char* msg)
 {
 #ifdef RPC_SVC_FG
 	if (_rpcpmstart)
@@ -42,6 +47,8 @@ void _msgout(msg)
 	syslog(LOG_ERR, "%s", msg);
 #endif
 }
+
+static void closedown(void);
 
 static void
 closedown()
@@ -66,33 +73,29 @@ closedown()
 }
 
 static int *
-_suma_1(argp, rqstp)
-	suma_1_argument *argp;
-	struct svc_req *rqstp;
+_suma_1(suma_1_argument *argp, struct svc_req *rqstp)
 {
 	return(suma_1_svc(argp->a, argp->b, rqstp));
 }
 
 static int *
-_resta_1(argp, rqstp)
-	resta_1_argument *argp;
-	struct svc_req *rqstp;
+_resta_1(resta_1_argument *argp, struct svc_req *rqstp)
 {
 	return(resta_1_svc(argp->a, argp->b, rqstp));
 }
 
+static void sumar_1(struct svc_req *rqstp, SVCXPRT *transp);
+
 static void
-sumar_1(rqstp, transp)
-	struct svc_req *rqstp;
-	SVCXPRT *transp;
+sumar_1(struct svc_req *rqstp, SVCXPRT *transp)
 {
 	union {
 		suma_1_argument suma_1_arg;
 		resta_1_argument resta_1_arg;
 	} argument;
 	char *result;
-	bool_t (*xdr_argument)(), (*xdr_result)();
-	char *(*local)();
+	xdrproc_t xdr_argument, xdr_result;
+	char *(*local)(char *, struct svc_req *);
 
 	_rpcsvcdirty = 1;
 	switch (rqstp->rq_proc) {
@@ -102,15 +105,15 @@ sumar_1(rqstp, transp)
 		return;
 
 	case SUMA:
-		xdr_argument = xdr_suma_1_argument;
-		xdr_result = xdr_int;
-		local = (char *(*)()) _suma_1;
+		xdr_argument = (xdrproc_t) xdr_suma_1_argument;
+		xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) _suma_1;
 		break;
 
 	case RESTA:
-		xdr_argument = xdr_resta_1_argument;
-		xdr_result = xdr_int;
-		local = (char *(*)()) _resta_1;
+		xdr_argument = (xdrproc_t) xdr_resta_1_argument;
+		xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) _resta_1;
 		break;
 
 	default:
@@ -124,7 +127,7 @@ sumar_1(rqstp, transp)
 		_rpcsvcdirty = 0;
 		return;
 	}
-	result = (*local)(&argument, rqstp);
+	result = (*local)((char *)&argument, rqstp);
 	if (result != NULL && !svc_sendreply(transp, (xdrproc_t) xdr_result, result)) {
 		svcerr_systemerr(transp);
 	}
@@ -137,11 +140,10 @@ sumar_1(rqstp, transp)
 }
 
 
+int main( int argc, char* argv[] );
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main( int argc, char* argv[] )
 {
 	SVCXPRT *transp = NULL;
 	int sock;
@@ -226,7 +228,7 @@ char *argv[];
 		exit(1);
 	}
 	if (_rpcpmstart) {
-		(void) signal(SIGALRM, (void(*)()) closedown);
+		(void) signal(SIGALRM, (SIG_PF) closedown);
 		(void) alarm(_RPCSVC_CLOSEDOWN);
 	}
 	svc_run();
