@@ -4,15 +4,22 @@ CC = gcc
 # Flags de compilación
 CFLAGS = -Wall -g -fPIC -pthread
 
+# Librerías para el linker
+LDLIBS = -lpthread
+
 # Detectar sistema operativo
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-	CFLAGS += -ltr
+	CFLAGS += -I/usr/include/tirpc
+	LDLIBS += -ltirpc
 endif
 
 ifeq ($(UNAME_S),Darwin)
-	# En macOS, tirpc no se necesita
+	# macOS no requiere la librería tirpc, pero si la necesitas puedes incluirla
+	CFLAGS += -I/usr/include
+	LDLIBS += -ltirpc
+	# Asegúrate de que rpcgen también esté instalado y que esté disponible en tu PATH
 endif
 
 # Archivos fuente RPC generados
@@ -40,58 +47,34 @@ LIB_NAME = libclaves.so
 
 # Ejecutables
 TARGET_SERVER = servidor
-TARGET_CLIENT0 = app-cliente-0
-TARGET_CLIENT1 = app-cliente-1
-TARGET_CLIENT6 = app-cliente-6
-TARGET_CLIENT2 = app-cliente-2
-TARGET_CLIENT3 = app-cliente-3
-TARGET_CLIENT4 = app-cliente-4
-TARGET_CLIENT5 = app-cliente-5
+TARGET_CLIENTS = app-cliente-0 app-cliente-1 app-cliente-2 app-cliente-3 app-cliente-4 app-cliente-5 app-cliente-6
 
 # Regla por defecto
-all: $(RPC_GEN_HDR) $(RPC_GEN_SRCS) $(TARGET_SERVER) $(LIB_NAME) $(TARGET_CLIENT0) $(TARGET_CLIENT1) $(TARGET_CLIENT6) $(TARGET_CLIENT2) $(TARGET_CLIENT3) $(TARGET_CLIENT4) $(TARGET_CLIENT5)
+all: $(RPC_GEN_HDR) $(RPC_GEN_SRCS) $(TARGET_SERVER) $(LIB_NAME) $(TARGET_CLIENTS)
 
-# Generar código RPC
+# Regla para limpiar y regenerar archivos rpcgen
+rpcgen-clean:
+	rm -f $(RPC_GEN_SRCS) $(RPC_GEN_HDR)
+
 $(RPC_GEN_HDR) $(RPC_GEN_SRCS): $(RPC_X)
-	rpcgen -N $(RPC_X)
+	rpcgen -C -N $(RPC_X)
 
 # Compilar el servidor
 $(TARGET_SERVER): $(OBJS_SERVER)
-	$(CC) $(CFLAGS) -o $(TARGET_SERVER) $(OBJS_SERVER)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 
 # Crear la librería compartida
 $(LIB_NAME): $(OBJS_PROXY)
-	$(CC) -shared -o $(LIB_NAME) $(OBJS_PROXY)
+	$(CC) -shared -o $@ $^
 
-# Compilar clientes y vincular con la librería
-$(TARGET_CLIENT0): $(SRCS_CLIENT0)
-	$(CC) $(CFLAGS) -o $(TARGET_CLIENT0) $(SRCS_CLIENT0) -L. -lclaves
-
-$(TARGET_CLIENT1): $(SRCS_CLIENT1)
-	$(CC) $(CFLAGS) -o $(TARGET_CLIENT1) $(SRCS_CLIENT1) -L. -lclaves
-
-$(TARGET_CLIENT6): $(SRCS_CLIENT6)
-	$(CC) $(CFLAGS) -o $(TARGET_CLIENT6) $(SRCS_CLIENT6) -L. -lclaves
-
-$(TARGET_CLIENT2): $(SRCS_CLIENT2)
-	$(CC) $(CFLAGS) -o $(TARGET_CLIENT2) $(SRCS_CLIENT2) -L. -lclaves
-
-$(TARGET_CLIENT3): $(SRCS_CLIENT3)
-	$(CC) $(CFLAGS) -o $(TARGET_CLIENT3) $(SRCS_CLIENT3) -L. -lclaves
-
-$(TARGET_CLIENT4): $(SRCS_CLIENT4)
-	$(CC) $(CFLAGS) -o $(TARGET_CLIENT4) $(SRCS_CLIENT4) -L. -lclaves
-
-$(TARGET_CLIENT5): $(SRCS_CLIENT5)
-	$(CC) $(CFLAGS) -o $(TARGET_CLIENT5) $(SRCS_CLIENT5) -L. -lclaves
+# Compilar clientes
+$(TARGET_CLIENTS): %: clientes/%.c $(LIB_NAME)
+	$(CC) $(CFLAGS) -o $@ $< -L. -lclaves $(LDLIBS)
 
 # Regla para compilar .c a .o
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Limpiar
-clean:
-	rm -f $(OBJS_SERVER) $(OBJS_PROXY) $(TARGET_SERVER) \
-	$(TARGET_CLIENT0) $(TARGET_CLIENT1) $(TARGET_CLIENT6) \
-	$(TARGET_CLIENT2) $(TARGET_CLIENT3) $(TARGET_CLIENT4) \
-	$(TARGET_CLIENT5) $(LIB_NAME) $(RPC_GEN_SRCS) $(RPC_GEN_HDR)
+# Limpiar todo
+clean: rpcgen-clean
+	rm -f $(OBJS_SERVER) $(OBJS_PROXY) $(TARGET_SERVER) $(TARGET_CLIENTS) $(LIB_NAME)

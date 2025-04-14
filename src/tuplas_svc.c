@@ -8,9 +8,15 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <rpc/pmap_clnt.h>
+#include <string.h>
 #include <netdb.h>
 #include <signal.h>
 #include <sys/ttycom.h>
+#ifdef __cplusplus
+#include <sysent.h>
+#endif /* __cplusplus */
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -30,8 +36,7 @@ static int _rpcfdtype;		/* Whether Stream or Datagram ? */
 static int _rpcsvcdirty;	/* Still serving ? */
 
 static
-void _msgout(msg)
-	char *msg;
+void _msgout(char* msg)
 {
 #ifdef RPC_SVC_FG
 	if (_rpcpmstart)
@@ -42,6 +47,8 @@ void _msgout(msg)
 	syslog(LOG_ERR, "%s", msg);
 #endif
 }
+
+static void closedown(void);
 
 static void
 closedown()
@@ -66,57 +73,45 @@ closedown()
 }
 
 static int *
-_destroy_1(argp, rqstp)
-	void  *argp;
-	struct svc_req *rqstp;
+_destroy_1(void  *argp, struct svc_req *rqstp)
 {
 	return(destroy_1_svc(rqstp));
 }
 
 static int *
-_setvalue_1(argp, rqstp)
-	peticion  *argp;
-	struct svc_req *rqstp;
+_setvalue_1(peticion  *argp, struct svc_req *rqstp)
 {
 	return(setvalue_1_svc(*argp, rqstp));
 }
 
 static peticion *
-_getvalue_1(argp, rqstp)
-	int  *argp;
-	struct svc_req *rqstp;
+_getvalue_1(int  *argp, struct svc_req *rqstp)
 {
 	return(getvalue_1_svc(*argp, rqstp));
 }
 
 static int *
-_modifyvalue_1(argp, rqstp)
-	peticion  *argp;
-	struct svc_req *rqstp;
+_modifyvalue_1(peticion  *argp, struct svc_req *rqstp)
 {
 	return(modifyvalue_1_svc(*argp, rqstp));
 }
 
 static int *
-_deletekey_1(argp, rqstp)
-	int  *argp;
-	struct svc_req *rqstp;
+_deletekey_1(int  *argp, struct svc_req *rqstp)
 {
 	return(deletekey_1_svc(*argp, rqstp));
 }
 
 static int *
-_exist_1(argp, rqstp)
-	int  *argp;
-	struct svc_req *rqstp;
+_exist_1(int  *argp, struct svc_req *rqstp)
 {
 	return(exist_1_svc(*argp, rqstp));
 }
 
+static void tuplas_1(struct svc_req *rqstp, SVCXPRT *transp);
+
 static void
-tuplas_1(rqstp, transp)
-	struct svc_req *rqstp;
-	SVCXPRT *transp;
+tuplas_1(struct svc_req *rqstp, SVCXPRT *transp)
 {
 	union {
 		peticion setvalue_1_arg;
@@ -126,45 +121,45 @@ tuplas_1(rqstp, transp)
 		int exist_1_arg;
 	} argument;
 	char *result;
-	bool_t (*xdr_argument)(), (*xdr_result)();
-	char *(*local)();
+	xdrproc_t xdr_argument, xdr_result;
+	char *(*local)(char *, struct svc_req *);
 
 	_rpcsvcdirty = 1;
 	switch (rqstp->rq_proc) {
 	case DESTROY:
-		xdr_argument = xdr_void;
-		xdr_result = xdr_int;
-		local = (char *(*)()) _destroy_1;
+		xdr_argument = (xdrproc_t) xdr_void;
+		xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) _destroy_1;
 		break;
 
 	case SETVALUE:
-		xdr_argument = xdr_peticion;
-		xdr_result = xdr_int;
-		local = (char *(*)()) _setvalue_1;
+		xdr_argument = (xdrproc_t) xdr_peticion;
+		xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) _setvalue_1;
 		break;
 
 	case GETVALUE:
-		xdr_argument = xdr_int;
-		xdr_result = xdr_peticion;
-		local = (char *(*)()) _getvalue_1;
+		xdr_argument = (xdrproc_t) xdr_int;
+		xdr_result = (xdrproc_t) xdr_peticion;
+		local = (char *(*)(char *, struct svc_req *)) _getvalue_1;
 		break;
 
 	case MODIFYVALUE:
-		xdr_argument = xdr_peticion;
-		xdr_result = xdr_int;
-		local = (char *(*)()) _modifyvalue_1;
+		xdr_argument = (xdrproc_t) xdr_peticion;
+		xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) _modifyvalue_1;
 		break;
 
 	case DELETEKEY:
-		xdr_argument = xdr_int;
-		xdr_result = xdr_int;
-		local = (char *(*)()) _deletekey_1;
+		xdr_argument = (xdrproc_t) xdr_int;
+		xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) _deletekey_1;
 		break;
 
 	case EXIST:
-		xdr_argument = xdr_int;
-		xdr_result = xdr_int;
-		local = (char *(*)()) _exist_1;
+		xdr_argument = (xdrproc_t) xdr_int;
+		xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) _exist_1;
 		break;
 
 	default:
@@ -178,7 +173,7 @@ tuplas_1(rqstp, transp)
 		_rpcsvcdirty = 0;
 		return;
 	}
-	result = (*local)(&argument, rqstp);
+	result = (*local)((char *)&argument, rqstp);
 	if (result != NULL && !svc_sendreply(transp, (xdrproc_t) xdr_result, result)) {
 		svcerr_systemerr(transp);
 	}
@@ -191,11 +186,10 @@ tuplas_1(rqstp, transp)
 }
 
 
+int main( int argc, char* argv[] );
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main( int argc, char* argv[] )
 {
 	SVCXPRT *transp = NULL;
 	int sock;
@@ -280,7 +274,7 @@ char *argv[];
 		exit(1);
 	}
 	if (_rpcpmstart) {
-		(void) signal(SIGALRM, (void(*)()) closedown);
+		(void) signal(SIGALRM, (SIG_PF) closedown);
 		(void) alarm(_RPCSVC_CLOSEDOWN);
 	}
 	svc_run();

@@ -6,9 +6,7 @@
 #include "tuplas.h"
 
 bool_t
-xdr_coord(xdrs, objp)
-	XDR *xdrs;
-	coord *objp;
+xdr_coord(XDR *xdrs, coord *objp)
 {
 
 	if (!xdr_int(xdrs, &objp->x))
@@ -19,9 +17,7 @@ xdr_coord(xdrs, objp)
 }
 
 bool_t
-xdr_peticion(xdrs, objp)
-	XDR *xdrs;
-	peticion *objp;
+xdr_peticion(XDR *xdrs, peticion *objp)
 {
 
 	if (!xdr_int(xdrs, &objp->key))

@@ -3,14 +3,14 @@
  * It was generated using rpcgen.
  */
 
+#include <memory.h>
 #include "tuplas.h"
 
 /* Default timeout can be changed using clnt_control() */
 static struct timeval TIMEOUT = { 25, 0 };
 
 int *
-destroy_1(clnt)
-	CLIENT *clnt;
+destroy_1(CLIENT *clnt)
 {
 	static int clnt_res;
 
@@ -21,9 +21,7 @@ destroy_1(clnt)
 }
 
 int *
-setvalue_1(p, clnt)
-	peticion p;
-	CLIENT *clnt;
+setvalue_1(peticion p,  CLIENT *clnt)
 {
 	static int clnt_res;
 
@@ -34,9 +32,7 @@ setvalue_1(p, clnt)
 }
 
 peticion *
-getvalue_1(arg1, clnt)
-	int arg1;
-	CLIENT *clnt;
+getvalue_1(int arg1,  CLIENT *clnt)
 {
 	static peticion clnt_res;
 
@@ -47,9 +43,7 @@ getvalue_1(arg1, clnt)
 }
 
 int *
-modifyvalue_1(p, clnt)
-	peticion p;
-	CLIENT *clnt;
+modifyvalue_1(peticion p,  CLIENT *clnt)
 {
 	static int clnt_res;
 
@@ -60,9 +54,7 @@ modifyvalue_1(p, clnt)
 }
 
 int *
-deletekey_1(arg1, clnt)
-	int arg1;
-	CLIENT *clnt;
+deletekey_1(int arg1,  CLIENT *clnt)
 {
 	static int clnt_res;
 
@@ -73,9 +65,7 @@ deletekey_1(arg1, clnt)
 }
 
 int *
-exist_1(arg1, clnt)
-	int arg1;
-	CLIENT *clnt;
+exist_1(int arg1,  CLIENT *clnt)
 {
 	static int clnt_res;
 

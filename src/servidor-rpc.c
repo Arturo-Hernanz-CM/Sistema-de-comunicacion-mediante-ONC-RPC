@@ -27,7 +27,7 @@ int * destroy_1_svc(struct svc_req *rqstp) {
 }
 
 // Función set value
-int * setvalue_1_svc(struct Peticion argp, struct svc_req *rqstp) {
+int * setvalue_1_svc(peticion argp, struct svc_req *rqstp) {
     static int resultado;
     struct Coord value3 = {argp.value3.x, argp.value3.y};
     resultado = set_value(argp.key, argp.value1, argp.N_value2, argp.value2, value3);
@@ -58,7 +58,7 @@ peticion *getvalue_1_svc(int argp, struct svc_req *rqstp) {
 }
 
 // Función modify value
-int *modifyvalue_1_svc(struct Peticion argp, struct svc_req *rqstp) {
+int *modifyvalue_1_svc(peticion argp, struct svc_req *rqstp) {
     static int resultado;
     struct Coord value3 = {argp.value3.x, argp.value3.y};
     resultado = modify_value(argp.key, argp.value1, argp.N_value2, argp.value2, value3);
