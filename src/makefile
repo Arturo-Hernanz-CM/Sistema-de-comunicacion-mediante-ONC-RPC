@@ -21,7 +21,7 @@ RPC_GEN_SRCS = tuplas_clnt.c tuplas_svc.c tuplas_xdr.c
 RPC_GEN_HDR = tuplas.h
 
 # Archivos fuente
-SRCS_SERVER = servidor-rpc.c claves.c lines.c $(RPC_GEN_SRCS)
+SRCS_SERVER = servidor-rpc.c claves.c $(RPC_GEN_SRCS)
 SRCS_PROXY = proxy-rpc.c lines.c
 SRCS_CLIENT0 = clientes/app-cliente-0.c
 SRCS_CLIENT1 = clientes/app-cliente-1.c

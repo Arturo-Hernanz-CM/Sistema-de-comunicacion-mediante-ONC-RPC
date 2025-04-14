@@ -14,9 +14,9 @@ struct peticion {
 program TUPLAS {
   version TUPLASVER {
     int DESTROY(void) = 0;
-    int SETVALUE(struct Peticion p) = 1;
+    int SETVALUE(peticion p) = 1;
     peticion GETVALUE(int) = 2;
-    int MODIFYVALUE(struct Peticion p) = 3;
+    int MODIFYVALUE(peticion p) = 3;
     int DELETEKEY(int) = 4;
     int EXIST(int) = 5;
   } = 1;

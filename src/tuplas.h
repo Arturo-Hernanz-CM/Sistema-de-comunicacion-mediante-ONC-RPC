@@ -50,14 +50,14 @@ bool_t xdr_peticion();
 extern "C" int * destroy_1(CLIENT *);
 extern "C" int * destroy_1_svc(struct svc_req *);
 #define SETVALUE ((rpc_uint)1)
-extern "C" int * setvalue_1(struct Peticion , CLIENT *);
-extern "C" int * setvalue_1_svc(struct Peticion , struct svc_req *);
+extern "C" int * setvalue_1(peticion , CLIENT *);
+extern "C" int * setvalue_1_svc(peticion , struct svc_req *);
 #define GETVALUE ((rpc_uint)2)
 extern "C" peticion * getvalue_1(int , CLIENT *);
 extern "C" peticion * getvalue_1_svc(int , struct svc_req *);
 #define MODIFYVALUE ((rpc_uint)3)
-extern "C" int * modifyvalue_1(struct Peticion , CLIENT *);
-extern "C" int * modifyvalue_1_svc(struct Peticion , struct svc_req *);
+extern "C" int * modifyvalue_1(peticion , CLIENT *);
+extern "C" int * modifyvalue_1_svc(peticion , struct svc_req *);
 #define DELETEKEY ((rpc_uint)4)
 extern "C" int * deletekey_1(int , CLIENT *);
 extern "C" int * deletekey_1_svc(int , struct svc_req *);
@@ -70,14 +70,14 @@ extern "C" int * exist_1_svc(int , struct svc_req *);
 extern  int * destroy_1(CLIENT *);
 extern  int * destroy_1_svc(struct svc_req *);
 #define SETVALUE ((rpc_uint)1)
-extern  int * setvalue_1(struct Peticion , CLIENT *);
-extern  int * setvalue_1_svc(struct Peticion , struct svc_req *);
+extern  int * setvalue_1(peticion , CLIENT *);
+extern  int * setvalue_1_svc(peticion , struct svc_req *);
 #define GETVALUE ((rpc_uint)2)
 extern  peticion * getvalue_1(int , CLIENT *);
 extern  peticion * getvalue_1_svc(int , struct svc_req *);
 #define MODIFYVALUE ((rpc_uint)3)
-extern  int * modifyvalue_1(struct Peticion , CLIENT *);
-extern  int * modifyvalue_1_svc(struct Peticion , struct svc_req *);
+extern  int * modifyvalue_1(peticion , CLIENT *);
+extern  int * modifyvalue_1_svc(peticion , struct svc_req *);
 #define DELETEKEY ((rpc_uint)4)
 extern  int * deletekey_1(int , CLIENT *);
 extern  int * deletekey_1_svc(int , struct svc_req *);

@@ -22,13 +22,13 @@ destroy_1(clnt)
 
 int *
 setvalue_1(p, clnt)
-	struct Peticion p;
+	peticion p;
 	CLIENT *clnt;
 {
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, SETVALUE, xdr_Peticion, &p, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
+	if (clnt_call(clnt, SETVALUE, xdr_peticion, &p, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
 		return (NULL);
 	return (&clnt_res);
 }
@@ -48,13 +48,13 @@ getvalue_1(arg1, clnt)
 
 int *
 modifyvalue_1(p, clnt)
-	struct Peticion p;
+	peticion p;
 	CLIENT *clnt;
 {
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, MODIFYVALUE, xdr_Peticion, &p, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
+	if (clnt_call(clnt, MODIFYVALUE, xdr_peticion, &p, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
 		return (NULL);
 	return (&clnt_res);
 }

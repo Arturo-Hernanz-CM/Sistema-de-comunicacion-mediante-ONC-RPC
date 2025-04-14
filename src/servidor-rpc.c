@@ -10,16 +10,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <rpc/pmap_clnt.h>
 
 // Variables globales
-char *ip_servidor;
-char *puerto_servidor_char;
 Lista * base_datos = NULL;
-
-pthread_mutex_t mutex_mensaje;
-pthread_cond_t condicion_mensaje;
-pthread_mutex_t mutex_funcion;
-int ocupado = 0;
+extern void tuplas_1(struct svc_req *, SVCXPRT *);
 
 // Funciones
 

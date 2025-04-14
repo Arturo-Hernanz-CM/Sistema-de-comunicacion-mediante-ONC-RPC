@@ -75,7 +75,7 @@ _destroy_1(argp, rqstp)
 
 static int *
 _setvalue_1(argp, rqstp)
-	struct Peticion  *argp;
+	peticion  *argp;
 	struct svc_req *rqstp;
 {
 	return(setvalue_1_svc(*argp, rqstp));
@@ -91,7 +91,7 @@ _getvalue_1(argp, rqstp)
 
 static int *
 _modifyvalue_1(argp, rqstp)
-	struct Peticion  *argp;
+	peticion  *argp;
 	struct svc_req *rqstp;
 {
 	return(modifyvalue_1_svc(*argp, rqstp));
@@ -119,9 +119,9 @@ tuplas_1(rqstp, transp)
 	SVCXPRT *transp;
 {
 	union {
-		struct Peticion setvalue_1_arg;
+		peticion setvalue_1_arg;
 		int getvalue_1_arg;
-		struct Peticion modifyvalue_1_arg;
+		peticion modifyvalue_1_arg;
 		int deletekey_1_arg;
 		int exist_1_arg;
 	} argument;
@@ -138,7 +138,7 @@ tuplas_1(rqstp, transp)
 		break;
 
 	case SETVALUE:
-		xdr_argument = xdr_Peticion;
+		xdr_argument = xdr_peticion;
 		xdr_result = xdr_int;
 		local = (char *(*)()) _setvalue_1;
 		break;
@@ -150,7 +150,7 @@ tuplas_1(rqstp, transp)
 		break;
 
 	case MODIFYVALUE:
-		xdr_argument = xdr_Peticion;
+		xdr_argument = xdr_peticion;
 		xdr_result = xdr_int;
 		local = (char *(*)()) _modifyvalue_1;
 		break;
