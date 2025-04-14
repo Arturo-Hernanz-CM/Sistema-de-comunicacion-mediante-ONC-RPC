@@ -1,7 +1,7 @@
 #include "claves.h"
 #include "estructuras.h"
 #include "tuplas.h"
-#include <rpc/rpc.h>
+#include <pthread.h>
 #include <stdint.h>
 #include <stdio.h> 
 #include <stdlib.h>
@@ -11,9 +11,11 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <rpc/pmap_clnt.h>
+#include <rpc/rpc.h>
 
 // Variables globales
 Lista * base_datos = NULL;
+pthread_mutex_t mutex_funcion;
 extern void tuplas_1(struct svc_req *, SVCXPRT *);
 
 // Funciones
@@ -115,6 +117,7 @@ int main(int argc, char **argv) {
     base_datos->inicio = NULL;
     base_datos->final = NULL;
     base_datos->size = 0;
+    pthread_mutex_init(&mutex_funcion, NULL);
 
 
     // RPC
