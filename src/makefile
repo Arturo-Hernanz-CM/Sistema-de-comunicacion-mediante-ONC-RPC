@@ -2,7 +2,7 @@
 CC = gcc
 
 # Flags de compilación
-CFLAGS = -Wall -g -fPIC -pthread
+CFLAGS = -Wall -g -fPIC -pthread -DRPC_SVC_FG
 
 # Librerías para el linker
 LDLIBS = -lpthread -ldl
@@ -15,19 +15,15 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
 	CFLAGS += -I/usr/include/tirpc
+	CFLAGS += -ltr
 	LDLIBS += -ltirpc
 	LDLIBS += -lnsl
 endif
 
 ifeq ($(UNAME_S),Darwin)
-	CFLAGS += -I/opt/homebrew/Cellar/libtirpc/1.3.6/include
+	CFLAGS += -I/opt/homebrew/Cellar/libtirpc/1.3.6/include/tirpc
 	LDLIBS += -L/opt/homebrew/Cellar/libtirpc/1.3.6/lib -ltirpc
 endif
-
-# Archivos fuente RPC generados
-RPC_X = tuplas.x
-RPC_GEN_SRCS = tuplas_clnt.c tuplas_svc.c tuplas_xdr.c
-RPC_GEN_HDR = tuplas.h
 
 # Archivos fuente
 SRCS_SERVER = servidor-rpc.c claves.c tuplas_svc.c tuplas_xdr.c
@@ -44,8 +40,6 @@ SRCS_CLIENT6 = clientes/app-cliente-6.c
 OBJS_SERVER = $(SRCS_SERVER:.c=.o)
 OBJS_PROXY = $(SRCS_PROXY:.c=.o)
 
-
-servidor-rpc.o: tuplas_svc.h
 # Librería compartida
 LIB_NAME = libclaves.so
 
@@ -54,7 +48,7 @@ TARGET_SERVER = servidor
 TARGET_CLIENTS = app-cliente-0 app-cliente-1 app-cliente-2 app-cliente-3 app-cliente-4 app-cliente-5 app-cliente-6
 
 # Regla por defecto
-all: $(RPC_GEN_SRCS) $(TARGET_SERVER) $(LIB_NAME) $(TARGET_CLIENTS)
+all: $(TARGET_SERVER) $(LIB_NAME) $(TARGET_CLIENTS)
 
 # Compilar el servidor
 $(TARGET_SERVER): $(OBJS_SERVER)
@@ -73,5 +67,5 @@ $(TARGET_CLIENTS): %: clientes/%.c $(LIB_NAME)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Limpiar todo
-clean: rpcgen-clean
+clean:
 	rm -f $(OBJS_SERVER) $(OBJS_PROXY) $(TARGET_SERVER) $(TARGET_CLIENTS) $(LIB_NAME)

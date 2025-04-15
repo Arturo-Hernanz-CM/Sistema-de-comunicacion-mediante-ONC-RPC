@@ -1,7 +1,6 @@
 #include "claves.h"
 #include "estructuras.h"
 #include "tuplas.h"
-#include "tuplas_svc.h"
 #include <pthread.h>
 #include <stdint.h>
 #include <stdio.h> 
@@ -122,7 +121,6 @@ int main(int argc, char **argv) {
 
 
     // RPC
-    // Registrar el servicio
     register SVCXPRT *transp;
     pmap_unset(TUPLAS, TUPLASVER);
 
