@@ -1,6 +1,7 @@
 #include "claves.h"
 #include "estructuras.h"
 #include "tuplas.h"
+#include "tuplas_svc.h"
 #include <pthread.h>
 #include <stdint.h>
 #include <stdio.h> 
@@ -16,7 +17,7 @@
 // Variables globales
 Lista * base_datos = NULL;
 pthread_mutex_t mutex_funcion;
-extern void tuplas_1(struct svc_req *, SVCXPRT *);
+
 
 // Funciones
 

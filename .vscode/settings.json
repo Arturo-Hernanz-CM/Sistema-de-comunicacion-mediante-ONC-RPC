@@ -1,6 +1,7 @@
 {
     "files.associations": {
         ".fantomasignore": "ignore",
-        "osbyteorder.h": "c"
+        "osbyteorder.h": "c",
+        "tuplas.h": "c"
     }
 }
