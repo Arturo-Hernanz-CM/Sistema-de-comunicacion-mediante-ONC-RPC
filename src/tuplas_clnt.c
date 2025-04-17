@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include <memory.h>
+#include <memory.h> /* for memset */
 #include "tuplas.h"
 
 /* Default timeout can be changed using clnt_control() */
@@ -15,8 +15,11 @@ destroy_1(CLIENT *clnt)
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, DESTROY, xdr_void, NULL, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS) {
+	 if (clnt_call (clnt, DESTROY, (xdrproc_t) xdr_void, (caddr_t) NULL,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
+	}
 	return (&clnt_res);
 }
 
@@ -26,8 +29,12 @@ setvalue_1(peticion p,  CLIENT *clnt)
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, SETVALUE, xdr_peticion, &p, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
+	if (clnt_call (clnt, SETVALUE,
+		(xdrproc_t) xdr_peticion, (caddr_t) &p,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
+	}
 	return (&clnt_res);
 }
 
@@ -37,8 +44,12 @@ getvalue_1(int arg1,  CLIENT *clnt)
 	static peticion clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, GETVALUE, xdr_int, &arg1, xdr_peticion, &clnt_res, TIMEOUT) != RPC_SUCCESS)
+	if (clnt_call (clnt, GETVALUE,
+		(xdrproc_t) xdr_int, (caddr_t) &arg1,
+		(xdrproc_t) xdr_peticion, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
+	}
 	return (&clnt_res);
 }
 
@@ -48,8 +59,12 @@ modifyvalue_1(peticion p,  CLIENT *clnt)
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, MODIFYVALUE, xdr_peticion, &p, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
+	if (clnt_call (clnt, MODIFYVALUE,
+		(xdrproc_t) xdr_peticion, (caddr_t) &p,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
+	}
 	return (&clnt_res);
 }
 
@@ -59,8 +74,12 @@ deletekey_1(int arg1,  CLIENT *clnt)
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, DELETEKEY, xdr_int, &arg1, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
+	if (clnt_call (clnt, DELETEKEY,
+		(xdrproc_t) xdr_int, (caddr_t) &arg1,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
+	}
 	return (&clnt_res);
 }
 
@@ -70,7 +89,11 @@ exist_1(int arg1,  CLIENT *clnt)
 	static int clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call(clnt, EXIST, xdr_int, &arg1, xdr_int, &clnt_res, TIMEOUT) != RPC_SUCCESS)
+	if (clnt_call (clnt, EXIST,
+		(xdrproc_t) xdr_int, (caddr_t) &arg1,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
+	}
 	return (&clnt_res);
 }

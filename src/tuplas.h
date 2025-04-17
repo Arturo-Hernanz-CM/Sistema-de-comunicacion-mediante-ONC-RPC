@@ -6,9 +6,12 @@
 #ifndef _TUPLAS_H_RPCGEN
 #define _TUPLAS_H_RPCGEN
 
-#define RPCGEN_VERSION	199506
-
 #include <rpc/rpc.h>
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 struct coord {
@@ -16,14 +19,6 @@ struct coord {
 	int y;
 };
 typedef struct coord coord;
-#ifdef __cplusplus
-extern "C" bool_t xdr_coord(XDR *, coord*);
-#elif __STDC__
-extern  bool_t xdr_coord(XDR *, coord*);
-#else /* Old Style C */
-bool_t xdr_coord();
-#endif /* Old Style C */
-
 
 struct peticion {
 	int key;
@@ -33,77 +28,67 @@ struct peticion {
 	struct coord value3;
 };
 typedef struct peticion peticion;
-#ifdef __cplusplus
-extern "C" bool_t xdr_peticion(XDR *, peticion*);
-#elif __STDC__
-extern  bool_t xdr_peticion(XDR *, peticion*);
-#else /* Old Style C */
-bool_t xdr_peticion();
-#endif /* Old Style C */
 
+#define TUPLAS 99
+#define TUPLASVER 1
 
-#define TUPLAS ((rpc_uint)99)
-#define TUPLASVER ((rpc_uint)1)
-
-#ifdef __cplusplus
-#define DESTROY ((rpc_uint)0)
-extern "C" int * destroy_1(CLIENT *);
-extern "C" int * destroy_1_svc(struct svc_req *);
-#define SETVALUE ((rpc_uint)1)
-extern "C" int * setvalue_1(peticion , CLIENT *);
-extern "C" int * setvalue_1_svc(peticion , struct svc_req *);
-#define GETVALUE ((rpc_uint)2)
-extern "C" peticion * getvalue_1(int , CLIENT *);
-extern "C" peticion * getvalue_1_svc(int , struct svc_req *);
-#define MODIFYVALUE ((rpc_uint)3)
-extern "C" int * modifyvalue_1(peticion , CLIENT *);
-extern "C" int * modifyvalue_1_svc(peticion , struct svc_req *);
-#define DELETEKEY ((rpc_uint)4)
-extern "C" int * deletekey_1(int , CLIENT *);
-extern "C" int * deletekey_1_svc(int , struct svc_req *);
-#define EXIST ((rpc_uint)5)
-extern "C" int * exist_1(int , CLIENT *);
-extern "C" int * exist_1_svc(int , struct svc_req *);
-
-#elif __STDC__
-#define DESTROY ((rpc_uint)0)
+#if defined(__STDC__) || defined(__cplusplus)
+#define DESTROY 0
 extern  int * destroy_1(CLIENT *);
 extern  int * destroy_1_svc(struct svc_req *);
-#define SETVALUE ((rpc_uint)1)
+#define SETVALUE 1
 extern  int * setvalue_1(peticion , CLIENT *);
 extern  int * setvalue_1_svc(peticion , struct svc_req *);
-#define GETVALUE ((rpc_uint)2)
+#define GETVALUE 2
 extern  peticion * getvalue_1(int , CLIENT *);
 extern  peticion * getvalue_1_svc(int , struct svc_req *);
-#define MODIFYVALUE ((rpc_uint)3)
+#define MODIFYVALUE 3
 extern  int * modifyvalue_1(peticion , CLIENT *);
 extern  int * modifyvalue_1_svc(peticion , struct svc_req *);
-#define DELETEKEY ((rpc_uint)4)
+#define DELETEKEY 4
 extern  int * deletekey_1(int , CLIENT *);
 extern  int * deletekey_1_svc(int , struct svc_req *);
-#define EXIST ((rpc_uint)5)
+#define EXIST 5
 extern  int * exist_1(int , CLIENT *);
 extern  int * exist_1_svc(int , struct svc_req *);
+extern int tuplas_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
-#else /* Old Style C */
-#define DESTROY ((rpc_uint)0)
+#else /* K&R C */
+#define DESTROY 0
 extern  int * destroy_1();
 extern  int * destroy_1_svc();
-#define SETVALUE ((rpc_uint)1)
+#define SETVALUE 1
 extern  int * setvalue_1();
 extern  int * setvalue_1_svc();
-#define GETVALUE ((rpc_uint)2)
+#define GETVALUE 2
 extern  peticion * getvalue_1();
 extern  peticion * getvalue_1_svc();
-#define MODIFYVALUE ((rpc_uint)3)
+#define MODIFYVALUE 3
 extern  int * modifyvalue_1();
 extern  int * modifyvalue_1_svc();
-#define DELETEKEY ((rpc_uint)4)
+#define DELETEKEY 4
 extern  int * deletekey_1();
 extern  int * deletekey_1_svc();
-#define EXIST ((rpc_uint)5)
+#define EXIST 5
 extern  int * exist_1();
 extern  int * exist_1_svc();
-#endif /* Old Style C */
+extern int tuplas_1_freeresult ();
+#endif /* K&R C */
+
+/* the xdr functions */
+
+#if defined(__STDC__) || defined(__cplusplus)
+extern  bool_t xdr_coord (XDR *, coord*);
+extern  bool_t xdr_peticion (XDR *, peticion*);
+
+#else /* K&R C */
+extern bool_t xdr_coord ();
+extern bool_t xdr_peticion ();
+
+#endif /* K&R C */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !_TUPLAS_H_RPCGEN */
