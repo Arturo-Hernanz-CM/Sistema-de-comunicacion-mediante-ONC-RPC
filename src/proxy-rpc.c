@@ -44,7 +44,9 @@ int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coor
 
     // Asignacion de valores a la estructura
     pet.key = key;
+    printf("a\n");
     strcpy(pet.value1, value1);
+    printf("b\n");
     pet.N_value2 = N_value2;
     memcpy(&pet.value2, V_value2, N_value2*sizeof(double));
     pet.value3.x = value3.x;

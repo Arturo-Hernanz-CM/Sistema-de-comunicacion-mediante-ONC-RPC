@@ -5,12 +5,35 @@
 #include <string.h>
 #include <pthread.h>
 
-// Variable global
-extern Lista *base_datos;
-extern pthread_mutex_t mutex_funcion;
+// Variables globales
+Lista * base_datos = NULL;
+pthread_mutex_t mutex_funcion;
+pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
 int bloqueado = 0;
+static int inicializado = 0;
 
+// Inicializar la base de datos
+static void init(void){
+    pthread_mutex_lock(&mutex_init);
+    if (!inicializado){
+        base_datos = (Lista *) malloc(sizeof(Lista));
+        if (base_datos == NULL) {
+            perror("ERROR:\nFile: claves.c\nFunction: init\nError: Error al reservar memoria para la lista de claves");
+            return;
+        }
+        base_datos->inicio = NULL;
+        base_datos->final = NULL;
+        base_datos->size = 0;
+        pthread_mutex_init(&mutex_funcion, NULL);
+        inicializado = 1;
+        printf("Base de datos inicializada.\n");
+    }
+    pthread_mutex_unlock(&mutex_init);
+}
+
+// Destruir la base de datos
 int destroy(void){
+    init();
     pthread_mutex_lock(&mutex_funcion);
     if(base_datos != NULL){
         free(base_datos); 
@@ -31,7 +54,9 @@ int destroy(void){
     return 0;
 }
 
+// Insertar un valor en la base de datos 
 int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coord value3){
+    init();
     pthread_mutex_lock(&mutex_funcion);
     bloqueado = 1;
     if(N_value2 < 1 || N_value2 > 32){
@@ -106,7 +131,9 @@ int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coor
     return 0;
 }
 
+// Extraer un valor de la base de datos
 int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coord *value3){
+    init();
     pthread_mutex_lock(&mutex_funcion);
     bloqueado = 1;
     if (exist(key) == -1){
@@ -139,7 +166,9 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
     }
 }
 
+// Modificar un valor de la base de datos
 int modify_value(int key, char *value1, int N_value2, double *V_value2, struct Coord value3){
+    init();
     pthread_mutex_lock(&mutex_funcion);
     bloqueado = 1;
     if (N_value2 < 1 || N_value2 > 32){
@@ -185,7 +214,9 @@ int modify_value(int key, char *value1, int N_value2, double *V_value2, struct C
     return 0;
 }
 
+// Eliminar un valor de la base de datos
 int delete_key(int key){
+    init();
     pthread_mutex_lock(&mutex_funcion);
     bloqueado = 1;
     if (exist(key) == -1){
@@ -231,7 +262,9 @@ int delete_key(int key){
     }
 }
 
+// Verificar si una clave existe
 int exist(int key){
+    init();
     if (bloqueado == 0){
         pthread_mutex_lock(&mutex_funcion);
     }
