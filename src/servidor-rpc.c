@@ -13,11 +13,6 @@
 #include <rpc/pmap_clnt.h>
 #include <rpc/rpc.h>
 
-// Variables globales
-/*Lista * base_datos = NULL;
-pthread_mutex_t mutex_funcion;*/
-
-
 // Funciones
 
 // Funciones SVC
@@ -44,17 +39,24 @@ int * setvalue_1_svc(peticion argp, struct svc_req *rqstp) {
 
 // Función get value
 peticion *getvalue_1_svc(int argp, struct svc_req *rqstp) {
-    static peticion res;
+    static peticion res={0};
+    if (res.value1 != NULL) {
+        free(res.value1);
+    }
+    res.value1 = malloc(256);
+    if(res.value1 == NULL){
+        perror("ERROR:\nFile: servidor-rpc.c\nFunction: getvalue_1_svc\nError: Error al reservar memoria para guardar el value1");
+        res.key = -1;
+        return &res;
+    }
     int resultado;
     struct Coord value3 = {res.value3.x, res.value3.y};
     resultado = get_value(argp, res.value1, &res.N_value2, res.value2, &value3);
-
     if (resultado == -1) {
         perror("ERROR:\nFile: servidor-rpc.c\nFunction: getvalue_1_svc\nError: Error al insertar");
         res.key = -1;
         return &res;
     }
-
     res.key = argp;
     return &res;
 }
@@ -98,45 +100,3 @@ int *exist_1_svc(int argp, struct svc_req *rqstp) {
     
     return &resultado;
 }
-
-/*int main(int argc, char **argv) {
-    // Comprobacion de argumentos
-    if(argc != 1) {
-        perror("ERROR:\nFile: servidor-rpc.c\nFunction: main\nError: Número de argumentos incorrecto\n");
-        return -1;
-    }
-
-    // Inicializar la base de datos
-    base_datos = (Lista *) malloc(sizeof(Lista));
-    if (base_datos == NULL) {
-        perror("ERROR:\nFile: servidor-rpc.c\nFunction: main\nError: Error al reservar memoria para la lista de claves");
-        return -1;
-    }
-    base_datos->inicio = NULL;
-    base_datos->final = NULL;
-    base_datos->size = 0;
-    pthread_mutex_init(&mutex_funcion, NULL);
-
-
-    // RPC
-    /*register SVCXPRT *transp;
-    pmap_unset(TUPLAS, TUPLASVER);
-
-    // Socket TCP
-    transp = svctcp_create(RPC_ANYSOCK, 0, 0);
-    if (transp == NULL) {
-        perror("ERROR:\nFile: servidor-rpc.c\nFunction: main\nError: Error al crear el socket TCP");    
-        return -1;
-    }
-
-    // Registrar el servicio
-    if (!svc_register(transp, TUPLAS, TUPLASVER, tuplas_1, IPPROTO_TCP)) {
-        perror("ERROR:\nFile: servidor-rpc.c\nFunction: main\nError: Error al registrar el servicio");
-        return -1;
-    }
-
-    // Arrancar el servidor
-    svc_run();
-    
-    return 0;
-}*/

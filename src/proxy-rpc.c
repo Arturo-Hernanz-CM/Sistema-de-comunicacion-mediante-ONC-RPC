@@ -16,7 +16,7 @@ char *ip_servidor;
 
 
 // Funciones
-
+// Funcion destroy
 int destroy(void){
     // Variable de entorno
     ip_servidor = getenv("IP_TUPLAS");
@@ -38,15 +38,20 @@ int destroy(void){
     printf("Lista destruida.\n");
     return 0;
 }
+
+// Funcion set_value
 int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coord value3){
     // Variable de entorno
     ip_servidor = getenv("IP_TUPLAS");
 
     // Asignacion de valores a la estructura
     pet.key = key;
-    printf("a\n");
+    pet.value1 = malloc(strlen(value1) + 1);
+    if (pet.value1 == NULL) {
+        perror("ERROR:\nFile: proxy-rpc.c\nFunction: set_value\nError: Error al reservar memoria para guardar el value1");
+        return -1;
+    }
     strcpy(pet.value1, value1);
-    printf("b\n");
     pet.N_value2 = N_value2;
     memcpy(&pet.value2, V_value2, N_value2*sizeof(double));
     pet.value3.x = value3.x;
@@ -67,9 +72,12 @@ int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coor
     }
 
     clnt_destroy(cliente);
+    free(pet.value1);
     printf("Mensaje guardado en la lista.\n");
     return 0;
 }
+
+// Funcion get_value
 int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coord *value3){
     // Variable de entorno
     ip_servidor = getenv("IP_TUPLAS");
@@ -80,7 +88,6 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
         clnt_pcreateerror("ERROR:\nFile: proxy-rpc.c\nFunction: get_value\nError: Error al crear el cliente");
         return -1;
     }
-    
     // LLamada al servicio
     peticion * resp;
     resp = getvalue_1(key, cliente);
@@ -88,13 +95,13 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: get_value\nError: Error al hacer get");
         return -1;
     }
-
     // Escribir la respuesta en los valores que se pasan como argumentos
-    strcpy(value1, pet.value1);
-    *N_value2 = pet.N_value2;
-    memcpy(V_value2, &pet.value2, (*N_value2)*sizeof(double));
-    value3->x = pet.value3.x;
-    value3->y = pet.value3.y;
+    strcpy(value1, resp->value1);
+    *N_value2 = resp->N_value2;
+    memcpy(V_value2, &resp->value2, (*N_value2)*sizeof(double));
+    value3->x = resp->value3.x;
+    value3->y = resp->value3.y;
+    printf("%d\n", key);
 
     // Prints para comprobar el resultado
     printf("\nDatos de la clave %d recuperados:\n", key);
@@ -109,12 +116,19 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
     clnt_destroy(cliente);
     return 0;
 }
+
+// Funcion modify_value
 int modify_value(int key, char *value1, int N_value2, double *V_value2, struct Coord value3){
     // Variable de entorno
     ip_servidor = getenv("IP_TUPLAS");
 
     // Asignacion de valores a la estructura
     pet.key = key;
+    pet.value1 = malloc(strlen(value1) + 1);
+    if (pet.value1 == NULL) {
+        perror("ERROR:\nFile: proxy-rpc.c\nFunction: set_value\nError: Error al reservar memoria para guardar el value1");
+        return -1;
+    }
     strcpy(pet.value1, value1);
     pet.N_value2 = 2;
     memcpy(&pet.value2, V_value2, sizeof(double));
@@ -136,9 +150,12 @@ int modify_value(int key, char *value1, int N_value2, double *V_value2, struct C
     }
 
     clnt_destroy(cliente);
+    free(pet.value1);
     printf("Datos modificados.\n");
     return 0;
 }
+
+// Funcion delete_key
 int delete_key(int key){
     // Variable de entorno
     ip_servidor = getenv("IP_TUPLAS");
@@ -160,6 +177,8 @@ int delete_key(int key){
     printf("Datos asociados a la clave destruidos.\n");
     return 0;
 }
+
+// Funcion exist
 int exist(int key){
     // Variable de entorno
     ip_servidor = getenv("IP_TUPLAS");
