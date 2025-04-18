@@ -4,8 +4,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-Peticion peticion;
-
 // Ejemplo 6 -> set_value diferente
 int main (int argc, char **argv){
   // Valores a asignar a la peticion
