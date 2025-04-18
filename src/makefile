@@ -15,9 +15,7 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
 	CFLAGS += -I/usr/include/tirpc
-	CFLAGS += -ltr
 	LDLIBS += -ltirpc
-	LDLIBS += -lnsl
 endif
 
 ifeq ($(UNAME_S),Darwin)

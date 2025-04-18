@@ -20,6 +20,28 @@ pthread_mutex_t mutex_funcion;
 
 // Funciones
 
+// Funcion para inicializar la base de datos
+__attribute__((constructor)) 
+void inicializar_base_datos() {
+    base_datos = (Lista *) malloc(sizeof(Lista));
+    if (base_datos == NULL) {
+        fprintf(stderr, "Error al reservar memoria para la base de datos\n");
+        exit(1);
+    }
+
+    base_datos->inicio = NULL;
+    base_datos->final = NULL;
+    base_datos->size = 0;
+
+    if (pthread_mutex_init(&mutex_funcion, NULL) != 0) {
+        fprintf(stderr, "Error al inicializar el mutex\n");
+        exit(1);
+    }
+
+    printf("Base de datos inicializada correctamente (desde constructor)\n");
+}
+
+
 // Funciones SVC
 // Función destroy
 int * destroy_1_svc(struct svc_req *rqstp) {
@@ -99,9 +121,7 @@ int *exist_1_svc(int argp, struct svc_req *rqstp) {
     return &resultado;
 }
 
-
-
-int main(int argc, char **argv) {
+/*int main(int argc, char **argv) {
     // Comprobacion de argumentos
     if(argc != 1) {
         perror("ERROR:\nFile: servidor-rpc.c\nFunction: main\nError: Número de argumentos incorrecto\n");
@@ -121,7 +141,7 @@ int main(int argc, char **argv) {
 
 
     // RPC
-    register SVCXPRT *transp;
+    /*register SVCXPRT *transp;
     pmap_unset(TUPLAS, TUPLASVER);
 
     // Socket TCP
@@ -141,4 +161,4 @@ int main(int argc, char **argv) {
     svc_run();
     
     return 0;
-}
+}*/

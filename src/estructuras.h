@@ -35,8 +35,6 @@ struct Peticion{
         4 -> delete_key
         5 -> exist
     */
-
-    char cola_cliente[256];
 };
 
 #endif

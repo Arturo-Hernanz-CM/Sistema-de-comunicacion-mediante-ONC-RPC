@@ -34,5 +34,7 @@ xdr_peticion (XDR *xdrs, peticion *objp)
 		 return FALSE;
 	 if (!xdr_coord (xdrs, &objp->value3))
 		 return FALSE;
+	 if (!xdr_int (xdrs, &objp->operacion))
+		 return FALSE;
 	return TRUE;
 }

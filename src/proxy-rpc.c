@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 
 // Variable global
-struct Peticion peticion = {0};
+peticion pet = {0};
 char *ip_servidor;
 
 
@@ -29,7 +29,7 @@ int destroy(void){
     }
 
     // LLamada al servicio
-    if (destroy_1(cliente) == -1){
+    if (*destroy_1(cliente) == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: destroy\nError: Error al destruir");
         return -1;
     }
@@ -43,12 +43,13 @@ int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coor
     ip_servidor = getenv("IP_TUPLAS");
 
     // Asignacion de valores a la estructura
-    peticion.key = key;
-    strcpy(peticion.value1, value1);
-    peticion.N_value2 = N_value2;
-    memcpy(&peticion.value2, V_value2, N_value2*sizeof(double));
-    peticion.value3 = value3;
-    peticion.operacion = 1;
+    pet.key = key;
+    strcpy(pet.value1, value1);
+    pet.N_value2 = N_value2;
+    memcpy(&pet.value2, V_value2, N_value2*sizeof(double));
+    pet.value3.x = value3.x;
+    pet.value3.y = value3.y;
+    pet.operacion = 1;
 
     // Creacion del cliente
     CLIENT *cliente = clnt_create(ip_servidor, TUPLAS, TUPLASVER, "tcp");
@@ -58,7 +59,7 @@ int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coor
     }
 
     // LLamada al servicio
-    if (setvalue_1(peticion, cliente) == -1){
+    if (*setvalue_1(pet, cliente) == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: set_value\nError: Error al hacer set");
         return -1;
     }
@@ -79,18 +80,19 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
     }
     
     // LLamada al servicio
-    struct Peticion * resp;
+    peticion * resp;
     resp = getvalue_1(key, cliente);
-    if (tratar_peticion(&peticion) == -1){
+    if (resp->key == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: get_value\nError: Error al hacer get");
         return -1;
     }
 
     // Escribir la respuesta en los valores que se pasan como argumentos
-    strcpy(value1, peticion.value1);
-    *N_value2 = peticion.N_value2;
-    memcpy(V_value2, &peticion.value2, (*N_value2)*sizeof(double));
-    *value3 = peticion.value3;
+    strcpy(value1, pet.value1);
+    *N_value2 = pet.N_value2;
+    memcpy(V_value2, &pet.value2, (*N_value2)*sizeof(double));
+    value3->x = pet.value3.x;
+    value3->y = pet.value3.y;
 
     // Prints para comprobar el resultado
     printf("\nDatos de la clave %d recuperados:\n", key);
@@ -110,12 +112,13 @@ int modify_value(int key, char *value1, int N_value2, double *V_value2, struct C
     ip_servidor = getenv("IP_TUPLAS");
 
     // Asignacion de valores a la estructura
-    peticion.key = key;
-    strcpy(peticion.value1, value1);
-    peticion.N_value2 = 2;
-    memcpy(&peticion.value2, V_value2, sizeof(double));
-    peticion.value3 = value3;
-    peticion.operacion = 3;
+    pet.key = key;
+    strcpy(pet.value1, value1);
+    pet.N_value2 = 2;
+    memcpy(&pet.value2, V_value2, sizeof(double));
+    pet.value3.x = value3.x;
+    pet.value3.y = value3.y;
+    pet.operacion = 3;
 
     // Creacion del cliente
     CLIENT *cliente = clnt_create(ip_servidor, TUPLAS, TUPLASVER, "tcp");
@@ -125,7 +128,7 @@ int modify_value(int key, char *value1, int N_value2, double *V_value2, struct C
     }
 
     // LLamada al servicio
-    if (modifyvalue_1(peticion, cliente) == -1){
+    if (*modifyvalue_1(pet, cliente) == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: modify_value\nError: Error al modificar");
         return -1;
     }
@@ -146,7 +149,7 @@ int delete_key(int key){
     }
 
     // LLamada al servicio
-    if (deletekey_1(key, cliente) == -1){
+    if (*deletekey_1(key, cliente) == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: delete_key\nError: Error al borrar");
         return -1;
     }
@@ -167,7 +170,7 @@ int exist(int key){
     }
 
     // LLamada al servicio
-    if (exist_1(key, cliente) == -1){
+    if (*exist_1(key, cliente) == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: exist\nError: Error al comprobar existencia");
         return -1;
     }

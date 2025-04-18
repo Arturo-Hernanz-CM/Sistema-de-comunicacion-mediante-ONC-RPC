@@ -26,6 +26,7 @@ struct peticion {
 	int N_value2;
 	double value2[32];
 	struct coord value3;
+	int operacion;
 };
 typedef struct peticion peticion;
 
