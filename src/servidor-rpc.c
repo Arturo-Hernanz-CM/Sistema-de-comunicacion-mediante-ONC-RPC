@@ -1,17 +1,19 @@
 #include "claves.h"
-#include "estructuras.h"
 #include "tuplas.h"
-#include <pthread.h>
-#include <stdint.h>
 #include <stdio.h> 
 #include <stdlib.h>
+#include <rpc/pmap_clnt.h>
+/*
+#include <rpc/rpc.h>
+#include "estructuras.h"
 #include <string.h>
 #include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <rpc/pmap_clnt.h>
-#include <rpc/rpc.h>
+#include <pthread.h>
+#include <stdint.h>
+*/
 
 // Funciones
 

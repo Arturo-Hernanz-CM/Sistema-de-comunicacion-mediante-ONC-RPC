@@ -101,7 +101,6 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
     memcpy(V_value2, &resp->value2, (*N_value2)*sizeof(double));
     value3->x = resp->value3.x;
     value3->y = resp->value3.y;
-    printf("%d\n", key);
 
     // Prints para comprobar el resultado
     printf("\nDatos de la clave %d recuperados:\n", key);

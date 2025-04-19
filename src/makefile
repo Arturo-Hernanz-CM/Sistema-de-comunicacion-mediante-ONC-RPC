@@ -18,10 +18,11 @@ ifeq ($(UNAME_S),Linux)
 	LDLIBS += -ltirpc
 endif
 
-ifeq ($(UNAME_S),Darwin)
-	CFLAGS += -I/opt/homebrew/Cellar/libtirpc/1.3.6/include/tirpc
-	LDLIBS += -L/opt/homebrew/Cellar/libtirpc/1.3.6/lib -ltirpc
-endif
+
+#ifeq ($(UNAME_S),Darwin)
+#	CFLAGS += -I/opt/homebrew/Cellar/libtirpc/1.3.6/include/tirpc
+#	LDLIBS += -L/opt/homebrew/Cellar/libtirpc/1.3.6/lib -ltirpc
+#endif
 
 # Archivos fuente
 SRCS_SERVER = servidor-rpc.c claves.c tuplas_svc.c tuplas_xdr.c
