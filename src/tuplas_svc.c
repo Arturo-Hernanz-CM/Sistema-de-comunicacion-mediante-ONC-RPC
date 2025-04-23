@@ -16,40 +16,40 @@
 #define SIG_PF void(*)(int)
 #endif
 
-static int *
-_destroy_1 (void  *argp, struct svc_req *rqstp)
+int
+_destroy_1 (void  *argp, void *result, struct svc_req *rqstp)
 {
-	return (destroy_1_svc(rqstp));
+	return (destroy_1_svc(result, rqstp));
 }
 
-static int *
-_setvalue_1 (peticion  *argp, struct svc_req *rqstp)
+int
+_setvalue_1 (peticion  *argp, void *result, struct svc_req *rqstp)
 {
-	return (setvalue_1_svc(*argp, rqstp));
+	return (setvalue_1_svc(*argp, result, rqstp));
 }
 
-static peticion *
-_getvalue_1 (int  *argp, struct svc_req *rqstp)
+int
+_getvalue_1 (int  *argp, void *result, struct svc_req *rqstp)
 {
-	return (getvalue_1_svc(*argp, rqstp));
+	return (getvalue_1_svc(*argp, result, rqstp));
 }
 
-static int *
-_modifyvalue_1 (peticion  *argp, struct svc_req *rqstp)
+int
+_modifyvalue_1 (peticion  *argp, void *result, struct svc_req *rqstp)
 {
-	return (modifyvalue_1_svc(*argp, rqstp));
+	return (modifyvalue_1_svc(*argp, result, rqstp));
 }
 
-static int *
-_deletekey_1 (int  *argp, struct svc_req *rqstp)
+int
+_deletekey_1 (int  *argp, void *result, struct svc_req *rqstp)
 {
-	return (deletekey_1_svc(*argp, rqstp));
+	return (deletekey_1_svc(*argp, result, rqstp));
 }
 
-static int *
-_exist_1 (int  *argp, struct svc_req *rqstp)
+int
+_exist_1 (int  *argp, void *result, struct svc_req *rqstp)
 {
-	return (exist_1_svc(*argp, rqstp));
+	return (exist_1_svc(*argp, result, rqstp));
 }
 
 static void
@@ -62,45 +62,53 @@ tuplas_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		int deletekey_1_arg;
 		int exist_1_arg;
 	} argument;
-	char *result;
+	union {
+		int destroy_1_res;
+		int setvalue_1_res;
+		peticion getvalue_1_res;
+		int modifyvalue_1_res;
+		int deletekey_1_res;
+		int exist_1_res;
+	} result;
+	bool_t retval;
 	xdrproc_t _xdr_argument, _xdr_result;
-	char *(*local)(char *, struct svc_req *);
+	bool_t (*local)(char *, void *, struct svc_req *);
 
 	switch (rqstp->rq_proc) {
 	case DESTROY:
 		_xdr_argument = (xdrproc_t) xdr_void;
 		_xdr_result = (xdrproc_t) xdr_int;
-		local = (char *(*)(char *, struct svc_req *)) _destroy_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_destroy_1;
 		break;
 
 	case SETVALUE:
 		_xdr_argument = (xdrproc_t) xdr_peticion;
 		_xdr_result = (xdrproc_t) xdr_int;
-		local = (char *(*)(char *, struct svc_req *)) _setvalue_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_setvalue_1;
 		break;
 
 	case GETVALUE:
 		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_peticion;
-		local = (char *(*)(char *, struct svc_req *)) _getvalue_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_getvalue_1;
 		break;
 
 	case MODIFYVALUE:
 		_xdr_argument = (xdrproc_t) xdr_peticion;
 		_xdr_result = (xdrproc_t) xdr_int;
-		local = (char *(*)(char *, struct svc_req *)) _modifyvalue_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_modifyvalue_1;
 		break;
 
 	case DELETEKEY:
 		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_int;
-		local = (char *(*)(char *, struct svc_req *)) _deletekey_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_deletekey_1;
 		break;
 
 	case EXIST:
 		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_int;
-		local = (char *(*)(char *, struct svc_req *)) _exist_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_exist_1;
 		break;
 
 	default:
@@ -112,14 +120,17 @@ tuplas_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		svcerr_decode (transp);
 		return;
 	}
-	result = (*local)((char *)&argument, rqstp);
-	if (result != NULL && !svc_sendreply(transp, (xdrproc_t) _xdr_result, result)) {
+	retval = (bool_t) (*local)((char *)&argument, (void *)&result, rqstp);
+	if (retval > 0 && !svc_sendreply(transp, (xdrproc_t) _xdr_result, (char *)&result)) {
 		svcerr_systemerr (transp);
 	}
 	if (!svc_freeargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
 		fprintf (stderr, "%s", "unable to free arguments");
 		exit (1);
 	}
+	if (!tuplas_1_freeresult (transp, _xdr_result, (caddr_t) &result))
+		fprintf (stderr, "%s", "unable to free results");
+
 	return;
 }
 

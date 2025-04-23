@@ -8,6 +8,7 @@
 
 #include <rpc/rpc.h>
 
+#include <pthread.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,44 +36,44 @@ typedef struct peticion peticion;
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define DESTROY 0
-extern  int * destroy_1(CLIENT *);
-extern  int * destroy_1_svc(struct svc_req *);
+extern  enum clnt_stat destroy_1(int *, CLIENT *);
+extern  bool_t destroy_1_svc(int *, struct svc_req *);
 #define SETVALUE 1
-extern  int * setvalue_1(peticion , CLIENT *);
-extern  int * setvalue_1_svc(peticion , struct svc_req *);
+extern  enum clnt_stat setvalue_1(peticion , int *, CLIENT *);
+extern  bool_t setvalue_1_svc(peticion , int *, struct svc_req *);
 #define GETVALUE 2
-extern  peticion * getvalue_1(int , CLIENT *);
-extern  peticion * getvalue_1_svc(int , struct svc_req *);
+extern  enum clnt_stat getvalue_1(int , peticion *, CLIENT *);
+extern  bool_t getvalue_1_svc(int , peticion *, struct svc_req *);
 #define MODIFYVALUE 3
-extern  int * modifyvalue_1(peticion , CLIENT *);
-extern  int * modifyvalue_1_svc(peticion , struct svc_req *);
+extern  enum clnt_stat modifyvalue_1(peticion , int *, CLIENT *);
+extern  bool_t modifyvalue_1_svc(peticion , int *, struct svc_req *);
 #define DELETEKEY 4
-extern  int * deletekey_1(int , CLIENT *);
-extern  int * deletekey_1_svc(int , struct svc_req *);
+extern  enum clnt_stat deletekey_1(int , int *, CLIENT *);
+extern  bool_t deletekey_1_svc(int , int *, struct svc_req *);
 #define EXIST 5
-extern  int * exist_1(int , CLIENT *);
-extern  int * exist_1_svc(int , struct svc_req *);
+extern  enum clnt_stat exist_1(int , int *, CLIENT *);
+extern  bool_t exist_1_svc(int , int *, struct svc_req *);
 extern int tuplas_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
 #define DESTROY 0
-extern  int * destroy_1();
-extern  int * destroy_1_svc();
+extern  enum clnt_stat destroy_1();
+extern  bool_t destroy_1_svc();
 #define SETVALUE 1
-extern  int * setvalue_1();
-extern  int * setvalue_1_svc();
+extern  enum clnt_stat setvalue_1();
+extern  bool_t setvalue_1_svc();
 #define GETVALUE 2
-extern  peticion * getvalue_1();
-extern  peticion * getvalue_1_svc();
+extern  enum clnt_stat getvalue_1();
+extern  bool_t getvalue_1_svc();
 #define MODIFYVALUE 3
-extern  int * modifyvalue_1();
-extern  int * modifyvalue_1_svc();
+extern  enum clnt_stat modifyvalue_1();
+extern  bool_t modifyvalue_1_svc();
 #define DELETEKEY 4
-extern  int * deletekey_1();
-extern  int * deletekey_1_svc();
+extern  enum clnt_stat deletekey_1();
+extern  bool_t deletekey_1_svc();
 #define EXIST 5
-extern  int * exist_1();
-extern  int * exist_1_svc();
+extern  enum clnt_stat exist_1();
+extern  bool_t exist_1_svc();
 extern int tuplas_1_freeresult ();
 #endif /* K&R C */
 

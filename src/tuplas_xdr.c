@@ -8,6 +8,8 @@
 bool_t
 xdr_coord (XDR *xdrs, coord *objp)
 {
+	register int32_t *buf;
+
 	 if (!xdr_int (xdrs, &objp->x))
 		 return FALSE;
 	 if (!xdr_int (xdrs, &objp->y))
@@ -18,6 +20,9 @@ xdr_coord (XDR *xdrs, coord *objp)
 bool_t
 xdr_peticion (XDR *xdrs, peticion *objp)
 {
+	register int32_t *buf;
+
+	int i;
 	 if (!xdr_int (xdrs, &objp->key))
 		 return FALSE;
 	 if (!xdr_string (xdrs, &objp->value1, 256))
