@@ -19,15 +19,16 @@
 
 // Funciones SVC
 // Función destroy
-int * destroy_1_svc(struct svc_req *rqstp) {
-    static int resultado;
+bool_t destroy_1_svc(int * result, struct svc_req *rqstp) {
+    int resultado;
     resultado = destroy();
-    return &resultado;
+    *result = resultado;
+    return TRUE;
 }
 
 // Función set value
-int * setvalue_1_svc(peticion argp, struct svc_req *rqstp) {
-    static int resultado;
+bool_t setvalue_1_svc(peticion argp, int * result, struct svc_req *rqstp) {
+    int resultado;
     struct Coord value3 = {argp.value3.x, argp.value3.y};
     resultado = set_value(argp.key, argp.value1, argp.N_value2, argp.value2, value3);
 
@@ -35,37 +36,35 @@ int * setvalue_1_svc(peticion argp, struct svc_req *rqstp) {
         perror("ERROR:\nFile: servidor-rpc.c\nFunction: setvalue_1_svc\nError: Error al insertar");
         resultado = -1;
     }
-
-    return &resultado;
+    *result = resultado;
+    return TRUE;
 }
 
 // Función get value
-peticion *getvalue_1_svc(int argp, struct svc_req *rqstp) {
-    static peticion res={0};
-    if (res.value1 != NULL) {
-        free(res.value1);
+bool_t getvalue_1_svc(int argp, peticion * result, struct svc_req *rqstp) {
+    result->value1 = malloc(256);
+    if(result->value1 == NULL){
+        perror("ERROR:\nFile: servidor-rpc->c\nFunction: getvalue_1_svc\nError: Error al resultervar memoria para guardar el value1");
+        result->key = -1;
+        return FALSE;
     }
-    res.value1 = malloc(256);
-    if(res.value1 == NULL){
-        perror("ERROR:\nFile: servidor-rpc.c\nFunction: getvalue_1_svc\nError: Error al reservar memoria para guardar el value1");
-        res.key = -1;
-        return &res;
+    int resultultado;
+    struct Coord value3 = {result->value3.x, result->value3.y};
+    resultultado = get_value(argp, result->value1, &result->N_value2, result->value2, &value3);
+    if (resultultado == -1) {
+        perror("ERROR:\nFile: servidor-rpc->c\nFunction: getvalue_1_svc\nError: Error al insertar");
+        result->key = -1;
+        return FALSE;
     }
-    int resultado;
-    struct Coord value3 = {res.value3.x, res.value3.y};
-    resultado = get_value(argp, res.value1, &res.N_value2, res.value2, &value3);
-    if (resultado == -1) {
-        perror("ERROR:\nFile: servidor-rpc.c\nFunction: getvalue_1_svc\nError: Error al insertar");
-        res.key = -1;
-        return &res;
-    }
-    res.key = argp;
-    return &res;
+    result->key = argp;
+    result->value3.x = value3.x;
+    result->value3.y = value3.y;
+    return TRUE;
 }
 
 // Función modify value
-int *modifyvalue_1_svc(peticion argp, struct svc_req *rqstp) {
-    static int resultado;
+bool_t modifyvalue_1_svc(peticion argp, int * result, struct svc_req *rqstp) {
+    int resultado;
     struct Coord value3 = {argp.value3.x, argp.value3.y};
     resultado = modify_value(argp.key, argp.value1, argp.N_value2, argp.value2, value3);
 
@@ -74,12 +73,13 @@ int *modifyvalue_1_svc(peticion argp, struct svc_req *rqstp) {
         resultado = -1;
     }
 
-    return &resultado;
+    *result = resultado;
+    return TRUE;
 }
 
 // Función delete key
-int *deletekey_1_svc(int argp, struct svc_req *rqstp) {
-    static int resultado;
+bool_t deletekey_1_svc(int argp, int * result, struct svc_req *rqstp) {
+    int resultado;
     resultado = delete_key(argp);
 
     if (resultado == -1) {
@@ -87,11 +87,12 @@ int *deletekey_1_svc(int argp, struct svc_req *rqstp) {
         resultado = -1;
     }
 
-    return &resultado;
+    *result = resultado;
+    return TRUE;
 }
 
 // Funcion exist
-int *exist_1_svc(int argp, struct svc_req *rqstp) {
+bool_t exist_1_svc(int argp, int * result, struct svc_req *rqstp) {
     static int resultado;
     resultado = exist(argp);
 
@@ -100,5 +101,6 @@ int *exist_1_svc(int argp, struct svc_req *rqstp) {
         resultado = -1;
     }   
     
-    return &resultado;
+    *result = resultado;
+    return TRUE;
 }
