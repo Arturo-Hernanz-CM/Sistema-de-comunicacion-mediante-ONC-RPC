@@ -30,7 +30,7 @@ struct peticion {
 };
 typedef struct peticion peticion;
 
-#define TUPLAS 99
+#define TUPLAS 5850
 #define TUPLASVER 1
 
 #if defined(__STDC__) || defined(__cplusplus)

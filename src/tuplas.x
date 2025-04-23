@@ -21,4 +21,4 @@ program TUPLAS {
     int DELETEKEY(int) = 4;
     int EXIST(int) = 5;
   } = 1;
-} = 99;
+} = 5850;
