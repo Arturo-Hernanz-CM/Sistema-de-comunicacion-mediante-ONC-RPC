@@ -28,9 +28,12 @@ int destroy(void){
         return -1;
     }
 
-    // LLamada al servicio
-    if (*destroy_1(cliente) == -1){
+    int resultado;
+
+    enum clnt_stat stat = destroy_1(&resultado, cliente);
+    if (stat != RPC_SUCCESS || resultado == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: destroy\nError: Error al destruir");
+        clnt_destroy(cliente);
         return -1;
     }
 
@@ -65,8 +68,12 @@ int set_value(int key, char *value1, int N_value2, double *V_value2, struct Coor
         return -1;
     }
 
+    int resultado;
+
+    enum clnt_stat stat = setvalue_1(pet, &resultado, cliente);
+
     // LLamada al servicio
-    if (*setvalue_1(pet, cliente) == -1){
+    if (stat != RPC_SUCCESS || resultado == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: set_value\nError: Error al hacer set");
         return -1;
     }
@@ -88,10 +95,13 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
         clnt_pcreateerror("ERROR:\nFile: proxy-rpc.c\nFunction: get_value\nError: Error al crear el cliente");
         return -1;
     }
+
     // LLamada al servicio
-    peticion * resp;
-    resp = getvalue_1(key, cliente);
-    if (resp->key == -1){
+    peticion * resp = NULL;
+
+    enum clnt_stat stat = getvalue_1(key, resp, cliente);
+
+    if (stat != RPC_SUCCESS || resp->key == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: get_value\nError: Error al hacer get");
         return -1;
     }
@@ -142,8 +152,11 @@ int modify_value(int key, char *value1, int N_value2, double *V_value2, struct C
         return -1;
     }
 
+    int resultado;
+
+    enum clnt_stat stat = modifyvalue_1(pet, &resultado, cliente);
     // LLamada al servicio
-    if (*modifyvalue_1(pet, cliente) == -1){
+    if (stat != RPC_SUCCESS || resultado == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: modify_value\nError: Error al modificar");
         return -1;
     }
@@ -166,8 +179,12 @@ int delete_key(int key){
         return -1;
     }
 
+    int resultado;
+
+    enum clnt_stat stat = deletekey_1(key, &resultado, cliente);
+
     // LLamada al servicio
-    if (*deletekey_1(key, cliente) == -1){
+    if (stat != RPC_SUCCESS || resultado == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: delete_key\nError: Error al borrar");
         return -1;
     }
@@ -189,8 +206,12 @@ int exist(int key){
         return -1;
     }
 
+    int resultado;
+
+    enum clnt_stat stat = exist_1(key, &resultado, cliente);
+
     // LLamada al servicio
-    if (*exist_1(key, cliente) == -1){
+    if (stat != RPC_SUCCESS || resultado == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: exist\nError: Error al comprobar existencia");
         return -1;
     }

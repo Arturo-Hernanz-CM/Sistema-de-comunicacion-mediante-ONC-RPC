@@ -52,6 +52,13 @@ _exist_1 (int  *argp, void *result, struct svc_req *rqstp)
 	return (exist_1_svc(*argp, result, rqstp));
 }
 
+int
+tuplas_1_freeresult(SVCXPRT *transp, xdrproc_t xdr_result, caddr_t result)
+{
+    (void)transp;
+    return xdr_result(NULL, result, 0);
+}
+
 static void
 tuplas_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {

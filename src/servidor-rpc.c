@@ -20,7 +20,7 @@
 // Funciones SVC
 // Función destroy
 bool_t destroy_1_svc(int * result, struct svc_req *rqstp) {
-    int resultado;
+    static int resultado;
     resultado = destroy();
     *result = resultado;
     return TRUE;
@@ -28,7 +28,7 @@ bool_t destroy_1_svc(int * result, struct svc_req *rqstp) {
 
 // Función set value
 bool_t setvalue_1_svc(peticion argp, int * result, struct svc_req *rqstp) {
-    int resultado;
+    static int resultado;
     struct Coord value3 = {argp.value3.x, argp.value3.y};
     resultado = set_value(argp.key, argp.value1, argp.N_value2, argp.value2, value3);
 
@@ -48,7 +48,7 @@ bool_t getvalue_1_svc(int argp, peticion * result, struct svc_req *rqstp) {
         result->key = -1;
         return FALSE;
     }
-    int resultultado;
+    static int resultultado;
     struct Coord value3 = {result->value3.x, result->value3.y};
     resultultado = get_value(argp, result->value1, &result->N_value2, result->value2, &value3);
     if (resultultado == -1) {
@@ -64,7 +64,7 @@ bool_t getvalue_1_svc(int argp, peticion * result, struct svc_req *rqstp) {
 
 // Función modify value
 bool_t modifyvalue_1_svc(peticion argp, int * result, struct svc_req *rqstp) {
-    int resultado;
+    static int resultado;
     struct Coord value3 = {argp.value3.x, argp.value3.y};
     resultado = modify_value(argp.key, argp.value1, argp.N_value2, argp.value2, value3);
 
@@ -79,7 +79,7 @@ bool_t modifyvalue_1_svc(peticion argp, int * result, struct svc_req *rqstp) {
 
 // Función delete key
 bool_t deletekey_1_svc(int argp, int * result, struct svc_req *rqstp) {
-    int resultado;
+    static int resultado;
     resultado = delete_key(argp);
 
     if (resultado == -1) {
