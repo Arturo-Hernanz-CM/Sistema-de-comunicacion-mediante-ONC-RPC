@@ -55,8 +55,9 @@ _exist_1 (int  *argp, void *result, struct svc_req *rqstp)
 int
 tuplas_1_freeresult(SVCXPRT *transp, xdrproc_t xdr_result, caddr_t result)
 {
-    (void)transp;
-    return xdr_result(NULL, result, 0);
+	if (xdr_result == NULL || result == NULL) return 1;
+	xdr_free(xdr_result, result);
+	return 1;
 }
 
 static void
