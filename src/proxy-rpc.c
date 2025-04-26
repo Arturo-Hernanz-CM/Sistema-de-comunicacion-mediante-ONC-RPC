@@ -97,27 +97,24 @@ int get_value(int key, char *value1, int *N_value2, double *V_value2, struct Coo
     }
 
     // LLamada al servicio
-    peticion * resp = malloc(sizeof(peticion));
-    if (resp == NULL) {
-        perror("ERROR:\nFile: proxy-rpc.c\nFunction: get_value\nError: Error al reservar memoria para la peticion");
-        return -1;
-    }
+    peticion resp;
+    memset(&resp, 0, sizeof(peticion));
 
-    enum clnt_stat stat = getvalue_1(key, resp, cliente);
+    enum clnt_stat stat = getvalue_1(key, &resp, cliente);
 
 
-    if (stat != RPC_SUCCESS || resp->key == -1){
+    if (stat != RPC_SUCCESS || resp.key == -1){
         clnt_perror(cliente, "ERROR:\nFile: proxy-rpc.c\nFunction: get_value\nError: Error al hacer get");
         return -1;
     }
 
     // Escribir la respuesta en los valores que se pasan como argumentos
 
-    strcpy(value1, resp->value1);
-    *N_value2 = resp->N_value2;
-    memcpy(V_value2, &resp->value2, (*N_value2)*sizeof(double));
-    value3->x = resp->value3.x;
-    value3->y = resp->value3.y;
+    strcpy(value1, resp.value1);
+    *N_value2 = resp.N_value2;
+    memcpy(V_value2, &resp.value2, (*N_value2)*sizeof(double));
+    value3->x = resp.value3.x;
+    value3->y = resp.value3.y;
 
     // Prints para comprobar el resultado
     printf("\nDatos de la clave %d recuperados:\n", key);
