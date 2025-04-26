@@ -41,7 +41,7 @@ bool_t getvalue_1_svc(int argp, peticion * result, struct svc_req *rqstp) {
     struct Coord value3 = {result->value3.x, result->value3.y};
     resultultado = get_value(argp, result->value1, &result->N_value2, result->value2, &value3);
     if (resultultado == -1) {
-        perror("ERROR:\nFile: servidor-rpc->c\nFunction: getvalue_1_svc\nError: Error al insertar");
+        perror("ERROR:\nFile: servidor-rpc.c\nFunction: getvalue_1_svc\nError: Error al insertar");
         result->key = -1;
         return FALSE;
     }
